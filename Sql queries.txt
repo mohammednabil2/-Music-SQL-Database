@@ -1,0 +1,53 @@
+/* Query_1 - query used for first insight*/
+SELECT g.name,
+       count(quantity) AS purchases
+FROM invoiceline AS v
+JOIN track AS t ON v.trackid=t.TrackId
+JOIN genre AS g ON g.genreid=t.GenreId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
+
+
+
+/* Query_2 - query used for second insight*/
+SELECT a.name AS artist_name,
+       sum(il.quantity*il.unitprice) AS total_spent
+FROM InvoiceLine AS il
+JOIN Track AS t ON il.trackid = t.TrackId
+JOIN Genre AS g ON t.GenreId=g.GenreId
+JOIN album AS b ON t.AlbumId=b.AlbumId
+JOIN Artist AS a ON b.ArtistId=a.ArtistId
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10 ;
+
+
+
+/* Query_3 - query used for third insight*/
+SELECT CASE
+           WHEN t.Milliseconds >
+                  (SELECT avg(milliseconds)
+                   FROM track) THEN 'Long song'
+           ELSE 'Short song'
+       END AS TYPE,
+       count(v.Quantity) AS Purchases
+FROM invoiceline AS v
+JOIN track AS t ON v.TrackId=t.TrackId
+GROUP BY 1;
+
+
+
+
+
+/* Query_4 - query used for fourth insight*/
+SELECT v.BillingCountry AS Country,
+       count(v.InvoiceId)AS invoices
+FROM invoice AS v
+JOIN InvoiceLine AS il ON v.InvoiceId=il.InvoiceId
+JOIN Track AS t ON il.trackid = t.TrackId
+JOIN Genre AS g ON t.GenreId=g.GenreId
+WHERE g.name ='Rock'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 10;
